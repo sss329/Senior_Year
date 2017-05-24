@@ -1,0 +1,224 @@
+/*
+* eval - Evaluate the command line that the user has just typed in
+*
+* If the user has requested a built-in command (quit, jobs, bg or fg)
+* then execute it immediately. Otherwise, fork a child process and
+* run the job in the context of the child. If the job is running in
+* the foreground, wait for it to terminate and then return.  Note:
+* each child process must have a unique process group ID so that our
+* background children don't receive SIGINT (SIGTSTP) from the kernel
+* when we type ctrl-c (ctrl-z) at the keyboard.
+*/
+void eval(char *cmdline)
+ {
+	char *argv[MAXARGS]; /* argv for execve() */ 
+	int bg;		     /* should the job run in bg or fg */ 
+	pid_t pid; 	     /* process id */ 
+	sigset_t child_sat;  /* set the child status */ 
+	
+	// parse the cmd line input using parseline()
+	bg = parseline(cmdline, argv);
+	//set the sig functions 
+	Sigemptyset(&child_sat); 
+	Sigaddset(&child_sat, SIGCHILD); 
+ 
+	if (!builtin_command(argv))
+	 {
+		//block with sigprocmask 
+		sigprocmask(SIG_BLOCK, &child_sat, NULL); 
+		
+		if((pid = Fork()) == 0)
+		 {
+		   //unblock with sigprocmask 
+		   sigprocmask(SIG_UNBLOCK, &child_sat, NULL); 
+
+		   //change the pgid of the process to its own pid 
+		   Setpgid(0,0);
+		  
+		   /*child runs user job */ 
+		   if (execve(argv[0], argv, environ) < 0 )
+		    {
+			printf("%s: Command not found. \n", argv[0]); 
+			exit(0);
+		    }
+		 }
+		if(!bg)
+		 {
+		   /* parent waits for fg job to terminate */
+		   int status;
+		   //add the job to the FG 
+		   addjob(jobs, pid, FG, cmdline);
+		   //unblock  
+		   sigprocmask(SIG_UNBLOCK, &child_sat, NULL); 
+		   if (waitpid(pid, &status, 0) < 0) unix_error("waitfg: er"); 
+		 }
+		else /*otherwise, don't wait for bg job */ 
+		{
+	          //add the job to the BG 
+		  addjob(jobs, pid, BG, cmdline); 
+		}
+		 printf("%d %s", pid, cmdline);  
+	 }
+  return;
+ }
+ /*
+* builtin_cmd - If the user has typed a built-in command then execute
+*    it immediately.
+*/
+int builtin_cmd(char **argv)
+ {
+	//check the cmd here for quit.jobs, and bg or fg
+	if(!strcmp(argv[0], "quit"))
+	{
+		exit(0); 
+	}
+	else if(!strcmp("jobs", argv[0]))
+	{
+		listjobs(jobs); 
+		return 1; 
+	}
+	else if( !strcmp("bg", argv[0]) || !strcmp("fg", argv[0]) )
+	{
+		do_bgfg(argv); 
+		return 1; 
+	}
+  return 0;
+  /* not a builtin command */
+ }
+/*
+* do_bgfg - Execute the builtin bg and fg commands
+*/
+void do_bgfg(char **argv)
+ {
+	struct job_t *job: 
+        //check if arg NULL if NULL print error	
+	if ( argv[1] == NULL) prinf("command needs PID or jobid"); 
+
+	//if bg check if input is of a jid or a job and set state to BG
+	if ( !strcmp(argv[0],"bg") ) 
+	{
+		if(argv[1][0] == "%")
+		{
+			int jid = atoi(&argv[1][1]); 
+			job = getjobjid(jobs, jid);
+		}
+		else 
+		{
+			job = getjobpid(jobs, atoi(argv[1]));
+		}
+		kill(job->pid,SIGCONT); 
+		job->state = BG; 
+	
+	}
+	//if fg check if input is of a jid or job then set state FG and cal waitfg 
+	if ( argv[0] == "fg") 
+	{
+		
+		if(argv[1][0] == "%")
+		{
+			int jid = atoi(&argv[1][1]); 
+			job = getjobjid(jobs, jid);
+		}
+		else 
+		{
+		
+			job = getjobpid(jobs, atoi(argv[1]));
+		}
+		
+		job->state = FG;
+		waitfg(job->pid); 
+	
+	}
+	else 
+	{
+		printf("error"); 
+	}
+
+  return;
+ }
+/*
+* waitfg - Block until process pid is no longer the foreground process
+*/
+void waitfg(pid_t pid)
+ {
+	
+    	//loop to wait untill the pid comes out of FG state
+	while (fgpid(pid) != 0) 
+	{
+		sleep(1); 
+	} 
+
+  return;
+ }
+ /*****************
+* Signal handlers
+*****************/
+
+/*
+* sigchld_handler - The kernel sends a SIGCHLD to the shell whenever
+*     a child job terminates (becomes a zombie), or stops because it
+*     received a SIGSTOP or SIGTSTP signal. The handler reaps all
+*     available zombie children, but doesn't wait for any other
+*     currently running children to terminate.
+*/
+void sigchld_handler(int sig)
+ {
+   int child_status; 
+   pid_t pid; 
+   //ccount--; 
+   while((pid = waitpid(-1, &child_status, WNOHANG|WUNTRACED) > 0));
+   {
+   	prntf("Received signal %d from process %d\n", sig, pid); 
+	
+	struct job_t *job = getjobpid(jobs,pid); 
+
+	if(WIFEXITED(child_status))
+	{
+		deletejob(jobs,pid);
+	}
+	if(WIFSIGNALED(child_status))
+	{
+		deletejob(jobs,pid); 
+	}
+	if(WIFSTOPPED(chile_status))
+	{
+		job->state = ST; 	
+	}
+
+   }
+  return;
+ }
+
+/*
+* sigint_handler - The kernel sends a SIGINT to the shell whenver the
+*    user types ctrl-c at the keyboard.  Catch it and send it along
+*    to the foreground job.
+*/
+void sigint_handler(int sig)
+ {
+	
+    pid_t fg_pid = fgpid(jobs);
+	
+    if (fg_pid != 0 ) 
+    {
+	//kill(fdpid, sig); 
+	kill(-fg_pid, SIGINT); 
+    }	
+  return;
+ }
+
+/*
+* sigtstp_handler - The kernel sends a SIGTSTP to the shell whenever
+*     the user types ctrl-z at the keyboard. Catch it and suspend the
+*     foreground job by sending it a SIGTSTP.
+*/
+void sigtstp_handler(int sig)
+ {
+   pid_t fg_pid = fgpid(jobs); 
+   if (fg_pid != 0)
+   {
+   	kill(-fg_pid, SIGTSTP); 
+   }
+ 
+  return;
+ }

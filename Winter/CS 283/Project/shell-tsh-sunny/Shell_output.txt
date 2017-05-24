@@ -1,0 +1,99 @@
+sss329@tux2 shell-handout> make build
+gcc -g -pthread tsh-sunny.c  -o tsh-sunny
+sss329@tux2 shell-handout> make run
+./tsh-sunny
+tsh> ./myint 100 &
+7024 ./myint 100 &
+tsh> ./myspin 84 *
+Usage: ./myspin <n>
+7065 ./myspin 84 *
+tsh> jobs
+[1] (7024) Running ./myint 100 &
+tsh> ./myspin 84 &
+7093 ./myspin 84 &
+tsh> jobs
+[1] (7024) Running ./myint 100 &
+[2] (7093) Running ./myspin 84 &
+tsh> ./mysplit 4
+7115 ./mysplit 4
+tsh> jobs
+[1] (7024) Running ./myint 100 &
+[2] (7093) Running ./myspin 84 &
+tsh> ./mysplit 100 &
+7165 ./mysplit 100 &
+tsh> jobs
+[1] (7024) Running ./myint 100 &
+[2] (7093) Running ./myspin 84 &
+[3] (7165) Running ./mysplit 100 &
+tsh> ./mystop 100 &
+7185 ./mystop 100 &
+tsh> jobs
+[1] (7024) Running ./myint 100 &
+[2] (7093) Running ./myspin 84 &
+[3] (7165) Running ./mysplit 100 &
+[4] (7185) Running ./mystop 100 &
+tsh> ./mystop 4
+7205 ./mystop 4
+tsh> jobs
+[1] (7024) Running ./myint 100 &
+[2] (7093) Running ./myspin 84 &
+[3] (7165) Running ./mysplit 100 &
+[4] (7185) Running ./mystop 100 &
+[5] (7205) Stopped ./mystop 4
+tsh> ./myint 8
+^C7291 ./myint 8
+tsh> jobs
+[3] (7165) Running ./mysplit 100 &
+[4] (7185) Running ./mystop 100 &
+[5] (7205) Stopped ./mystop 4
+tsh> fg %5
+tsh> jobs
+[3] (7165) Running ./mysplit 100 &
+[4] (7185) Running ./mystop 100 &
+tsh> ./mysplit 10 &
+7413 ./mysplit 10 &
+tsh> fg 7413
+job error
+tsh> ./mysplit 10 &
+7461 ./mysplit 10 &
+tsh> fg 7461
+tsh> /bin/ls -l
+total 172
+-rw-rw-r--  1 sss329 sss329 17716 Mar  9 14:50 csapp.c
+-rw-rw-r--  1 sss329 sss329  5581 Mar  9 14:50 csapp.h
+-rw-rw-r--+ 1 sss329 sss329    84 Mar 16 20:11 makefile
+-rwxrwxr-x  1 sss329 sss329  8952 Mar 10 23:36 myint
+-rw-rw-r--  1 sss329 sss329   631 Dec  5  2002 myint.c
+-rwxrwxr-x  1 sss329 sss329  8800 Mar 10 23:26 myspin
+-rw-rw-r--  1 sss329 sss329   439 Aug 28  2002 myspin.c
+-rwxrwxr-x  1 sss329 sss329  8904 Mar 10 23:43 mysplit
+-rw-rw-r--  1 sss329 sss329   664 Aug 28  2002 mysplit.c
+-rwxrwxr-x  1 sss329 sss329  8960 Mar 10 23:40 mystop
+-rw-rw-r--  1 sss329 sss329   637 Dec  5  2002 mystop.c
+-rwxrwxr-x  1 sss329 sss329 26384 Mar 16 20:09 test
+-rwxrwxr-x  1 sss329 sss329 26384 Mar 16 20:12 tsh-sunny
+-rw-rw-r--+ 1 sss329 sss329 16614 Mar 16 19:57 tsh-sunny.c
+7523 /bin/ls -l
+tsh> ./bin/ps
+./bin/ps: Command not found.
+7535 ./bin/ps
+tsh> /bin/ps
+  PID TTY          TIME CMD
+ 6993 pts/10   00:00:00 make
+ 6994 pts/10   00:00:00 tsh-sunny
+ 7185 pts/10   00:00:00 mystop
+ 7553 pts/10   00:00:00 ps
+61038 pts/10   00:00:00 bash
+7553 /bin/ps
+tsh> /bin/echo THIS IS MY SHELL, THIS IS FUN ITS WORKING
+THIS IS MY SHELL, THIS IS FUN ITS WORKING
+7594 /bin/echo THIS IS MY SHELL, THIS IS FUN ITS WORKING
+tsh> jobs
+[4] (7185) Stopped ./mystop 100 &
+tsh> fg %4
+tsh> jobs
+tsh> bg
+command needs PID or jobid
+tsh> fg
+command needs PID or jobid
+tsh> quit

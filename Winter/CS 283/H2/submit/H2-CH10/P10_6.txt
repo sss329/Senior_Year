@@ -1,0 +1,10 @@
+
+P10.6 
+/* 	output of the program is going to print the file discriptor of fd2 
+	sss329@tux4 submit> ./p10_6
+	fd2 = 4
+*/
+P10.8 
+	C code uploaded 
+P10.10 
+	c code uploaded 

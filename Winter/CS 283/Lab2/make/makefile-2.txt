@@ -1,0 +1,26 @@
+#make file create executable called test and compiles and updates each object file with warning 
+#and debug flags 
+PROG=	test
+OBJS=	one.o main.o two.o three.o
+#Wall enables all compiler's warning messages
+#gcc -g generates debug information to be used by GDB debugger
+CFLAGS=	-Wall -g
+#target all with prerequisites PROG
+all: ${PROG}
+
+#sets target to variable PROG and object files to variable OBJS
+${PROG}: ${OBJS}
+#echo to the term what the executable or target depends on 
+	@echo $@ depends on $?
+#creates the executable one 
+	${CC} ${LDFLAGS} ${OBJS} -o ${PROG}
+#special target .c.o rule for translating .c files, i.e. C modules, to .o object files.
+.c.o:
+#compiles with CFLAGS $@ points to the object file being passed and $< points to the .c file 
+#$< = name of the first prerequisites.
+#$@ = filename of target
+	$(CC) -c $(CFLAGS) -o $@ $<
+#clean 	
+#delete the executable file one and all object files 
+clean:
+	rm -f ${PROG} ${OBJS}

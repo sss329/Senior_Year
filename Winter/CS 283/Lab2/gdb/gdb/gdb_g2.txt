@@ -1,0 +1,93 @@
+
+GNU gdb (Ubuntu 7.11.1-0ubuntu1~16.04) 7.11.1
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from g2...done.
+(gdb) l
+1       #include <stdio.h>
+2       #include <stdlib.h>
+3
+4       int main ()
+5        {
+6         char * buf;
+7         int num;
+8         num = 1 << 31;
+9         buf = malloc(num) ;
+10        fgets (buf, 1024, stdin) ;
+(gdb) r
+Starting program: /home/sss329/cs283/Lab2/gdb/gdb_test/g2
+helo
+
+Program received signal SIGSEGV, Segmentation fault.
+__GI__IO_getline_info (fp=fp@entry=0x7ffff7dd18e0 <_IO_2_1_stdin_>, buf=buf@entry=0x0, n=1022, delim=delim@entry=10, extract_delim=extract_delim@entry=1, eof=eof@entry=0x0) at iogetline.c:77
+77      iogetline.c: No such file or directory.
+(gdb) break 6
+Breakpoint 1 at 0x7ffff7a7cd70: file iogetline.c, line 6.
+(gdb) break 8
+Note: breakpoint 1 also set at pc 0x7ffff7a7cd70.
+Breakpoint 2 at 0x7ffff7a7cd70: file iogetline.c, line 8.
+(gdb) break 9
+Note: breakpoints 1 and 2 also set at pc 0x7ffff7a7cd70.
+Breakpoint 3 at 0x7ffff7a7cd70: file iogetline.c, line 9.
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/sss329/cs283/Lab2/gdb/gdb_test/g2
+
+Breakpoint 1, __GI__IO_getline (fp=fp@entry=0x7ffff7dd18e0 <_IO_2_1_stdin_>, buf=buf@entry=0x0, n=1023, delim=delim@entry=10, extract_delim=extract_delim@entry=1) at iogetline.c:34
+34      iogetline.c: No such file or directory.
+(gdb) step
+__GI__IO_getline_info (fp=fp@entry=0x7ffff7dd18e0 <_IO_2_1_stdin_>, buf=buf@entry=0x0, n=1023, delim=delim@entry=10, extract_delim=extract_delim@entry=1, eof=eof@entry=0x0) at iogetline.c:49
+49      in iogetline.c
+(gdb)
+51      in iogetline.c
+(gdb)
+49      in iogetline.c
+(gdb)
+51      in iogetline.c
+(gdb) l
+46      in iogetline.c
+(gdb) step
+53      in iogetline.c
+(gdb) stop
+(gdb) break
+Breakpoint 4 at 0x7ffff7a7cbf2: file iogetline.c, line 53.
+(gdb) clear
+Deleted breakpoint 4
+(gdb) step
+54      in iogetline.c
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/sss329/cs283/Lab2/gdb/gdb_test/g2
+
+Breakpoint 1, __GI__IO_getline (fp=fp@entry=0x7ffff7dd18e0 <_IO_2_1_stdin_>, buf=buf@entry=0x0, n=1023, delim=delim@entry=10, extract_delim=extract_delim@entry=1) at iogetline.c:34
+34      iogetline.c: No such file or directory.
+(gdb) break 9
+Note: breakpoints 1, 2 and 3 also set at pc 0x7ffff7a7cd70.
+Breakpoint 5 at 0x7ffff7a7cd70: file iogetline.c, line 9.
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/sss329/cs283/Lab2/gdb/gdb_test/g2
+
+Breakpoint 1, __GI__IO_getline (fp=fp@entry=0x7ffff7dd18e0 <_IO_2_1_stdin_>, buf=buf@entry=0x0, n=1023, delim=delim@entry=10, extract_delim=extract_delim@entry=1) at iogetline.c:34
+34      iogetline.c: No such file or directory.
+(gdb) continue
+Continuing.
+hello
+
+Program received signal SIGSEGV, Segmentation fault.
+__GI__IO_getline_info (fp=fp@entry=0x7ffff7dd18e0 <_IO_2_1_stdin_>, buf=buf@entry=0x0, n=1022, delim=delim@entry=10, extract_delim=extract_delim@entry=1, eof=eof@entry=0x0) at iogetline.c:77
+77      in iogetline.c

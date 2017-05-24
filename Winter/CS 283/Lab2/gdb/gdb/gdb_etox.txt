@@ -1,0 +1,85 @@
+
+sss329@tux1 gdb_test> gdb etox
+GNU gdb (Ubuntu 7.11.1-0ubuntu1~16.04) 7.11.1
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from etox...done.
+(gdb) l
+1       #include <stdio.h>
+2
+3       double getvalue (double, int);
+4       int factorial (int);
+5
+6       int main ()
+7        {
+8         int n;
+9         double x;
+10        double series;
+(gdb) step
+The program is not being run.
+(gdb) r
+Starting program: /home/sss329/cs283/Lab2/gdb/gdb_test/etox
+This program calculates e^x
+using sum of (x^k)/k!
+Enter x, n : 2 5
+x,n =   2.0000    5
+e^x =            inf
+[Inferior 1 (process 3382) exited normally]
+(gdb) l
+11
+12        printf("This program calculates e^x\n");
+13        printf("using sum of (x^k)/k!\n");
+14        printf("Enter x, n : ");
+15
+16        scanf("%lf%d",&x,&n);
+17        printf("x,n = %8.4lf %4d\n",x,n);
+18
+19        series = getvalue(x,n);
+20        printf("e^x = %14.10lf\n",series);
+(gdb) l
+21
+22        return(0);
+23       }
+24
+25      double getvalue (x,n)
+26      double x;
+27      int n;
+28       {
+29        int k;
+30        double value = 0.0;
+(gdb) l
+31        double xpow = 1.0;
+32        for (k = 0; k <= n; k++)
+33         {
+34          value += xpow / factorial(k);
+35          xpow = xpow * x;
+36         }
+37        return(value);
+38       }
+39
+40      int factorial (number)
+(gdb) break 34
+Breakpoint 1 at 0x400741: file etox.c, line 34.
+(gdb) r
+Starting program: /home/sss329/cs283/Lab2/gdb/gdb_test/etox
+This program calculates e^x
+using sum of (x^k)/k!
+Enter x, n : 2 4
+x,n =   2.0000    4
+
+Breakpoint 1, getvalue (x=2, n=4) at etox.c:34
+34          value += xpow / factorial(k);
+(gdb) step
+factorial (number=0) at etox.c:44
+44        int fact = 0;

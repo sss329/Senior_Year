@@ -1,0 +1,23 @@
+Sunny Shah Homework 4 CS283 
+
+
+Within a subdirectory, you have several files some of which (with an extension .txt)
+are plain text. Your program should do the following
+Search within each of these files for a string specified as the first parameter,
+for example abcde.
+If the file does contain the string (abcde), the program should replace the
+string everywhere with another string specified as the second parameter, for
+example xyz.
+If the first string (abcde) does not exist within the file, the program should
+insert it (abcde) immediately before a string specified as a third parameter,
+for example pqrst.
+If the third string (pqrst) does not exist, your program should do nothing.
+Be particularly careful about replacing strings of different lengths; make sure to
+allocate additional memory if needed!
+Print a log of your program's activities to stdout.
+
+1. Compile C code 
+	-make build 
+2. run target 
+	-Please give the DIR1=(the path you are looking in) arg1 =(the first search arg) arg2= (the one to replace it with) and arg3=(the one to put arg1 infront of)
+3. A log will be printed to stdout  

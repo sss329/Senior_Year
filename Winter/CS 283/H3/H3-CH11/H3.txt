@@ -1,0 +1,25 @@
+P11_6)
+     
+  A)
+     /* Read request line and headers */
+      Rio_readinitb(&rio, fd);
+      Rio_readlineb(&rio, buf, MAXLINE);                   //line:netp:doit:readrequest
+          rio_writen(fd, buf, MAXLINE);                    //echo back to client
+	
+	Here The rio_written function writes the request line and header lines to the client fd and then echos it 
+  B) 
+	output attached 
+  C) version and ouput attached 
+
+P11_7) 
+       else if (strstr(filename, ".mpg"))
+       strcpy(filetype, "video/mpg"); //add video mpg file format
+	
+	added a catch for the file format mpg 
+P11_9)
+	srcfd = Open(filename, O_RDONLY, 0);    //line:netp:servestatic:open
+   while((n = rio_readn(srcfd, buf, MAXLINE)) != 0){
+         Rio_writen(fd, buf , filesize);
+    }
+	
+	replaced the Mmap functions with rio functions to write the file to the clients fd 

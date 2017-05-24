@@ -1,0 +1,18 @@
+#Using one target the make file creates executable test and updates all OBJS files 
+#no flags are passed when compiling and each compile is echoed to the screen 
+PROG=	test
+OBJS=	one.o main.o two.o three.o
+
+CFLAGS=	-Wall -g
+
+#target all with prerequisites PROG
+all: ${PROG}
+#LDFLAGS is a variable used to invoke the linker during compilation. 
+#Since it is not explicitly defined, the default value is an empty string and does 
+#not affect the lines in which they're called.
+${PROG}: ${OBJS}
+	@echo $@ depends on $?
+	${CC} ${LDFLAGS} ${OBJS} -o ${PROG}
+#deletes all object files
+clean:
+	rm -f ls *.o

@@ -1,0 +1,19 @@
+Sunny Shah Lab4 CS283 
+
+part A: client.c 
+client receives cmd line args via "client host port" sends a request to a web server. The command-line arguments are
+Your program should create a client socket that connects to the server indicated by host,
+and runs 
+
+GET /index.html HTTP/1.1\r\n
+Host: www.google.com\r\n
+\r\n
+
+Then, your program should read the entire result and display it on the screen.
+
+Part B: server.c 
+
+This server will make the connectiona nd accopt it from the client and posts back the data the client asked for
+
+
+

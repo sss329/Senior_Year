@@ -1,0 +1,30 @@
+# Run 'make', then 'touch one.h' and 'make' again.
+#creates executable file called one using multiple targets that update the object files 
+#var to hold cc(c compiler)
+CC=cc
+#target to run all targets with prerequisites one 
+all: one
+
+#sets target name to "one" with inputs being object files one.o main.o two.o three.o 
+one: one.o main.o two.o three.o
+#compile the input files and create an excutable called "one"
+	${CC} one.o main.o two.o three.o -o one
+	
+#target one.o with prerequisites ext.h one.h main.c
+one.o: ext.h one.h one.c
+#compile one.c and update one.o 
+	${CC} -c one.c
+#target main.o with prerequisites ext.h one.h main.c
+main.o: ext.h one.h main.c
+#compile main.c and update main.o 
+	${CC} -c main.c
+#target two.o with prerequisites one.h two.c
+two.o: one.h two.c
+#compile two.c and update two.o
+	${CC} -c two.c
+#sets target name to "one" with inputs to the target is one.o main.o two.o three.o
+three.o: one.h three.c
+	${CC} -c three.c
+#delete the excutable file one and all object files 
+clean:
+	rm -f one *.o
